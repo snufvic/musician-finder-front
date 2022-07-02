@@ -20,9 +20,7 @@ function FileInput({
         name={name}
         className="form-control"
       />
-      {error && (
-        <span className="text-danger">{error?.replace(name, label)}</span>
-      )}
+      {error && <span className="text-danger">{error}</span>}
     </div>
   );
 }

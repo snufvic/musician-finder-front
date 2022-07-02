@@ -4,6 +4,7 @@ import Joi from "joi";
 import musicianService from "../services/musicianService";
 import withRouter from "./common/withRouter";
 import { toast } from "react-toastify";
+import config from "../config.json";
 
 class UpdateCard extends Form {
   state = {
@@ -53,7 +54,7 @@ class UpdateCard extends Form {
           first_name: musician.data.first_name,
           last_name: musician.data.last_name,
           phone: musician.data.phone,
-          profileImage: musician.data.profileImage,
+          profileImage: "",
           selected_districts: musician.data.districts,
           selected_instruments: musician.data.instruments,
         },
@@ -101,7 +102,13 @@ class UpdateCard extends Form {
 
   async doSubmit() {
     const {
-      form: { selected_districts, selected_instruments, profileImage, ...body },
+      form: {
+        selected_districts,
+        selected_instruments,
+        profileImage,
+        email,
+        ...body
+      },
     } = this.state;
 
     if (!selected_districts.length || !selected_instruments.length) {
@@ -120,6 +127,56 @@ class UpdateCard extends Form {
       return;
     }
 
+    if (profileImage) {
+      // console.log(profileImage.size);
+
+      const maxSize = config.imageMaxSize;
+
+      if (profileImage.size > maxSize) {
+        this.setState({
+          errors: {
+            profileImage: `File size exceeds max limit of ${
+              maxSize / 1000000
+            }MB`,
+          },
+        });
+
+        toast.error(
+          `File size exceeds max limit of ${maxSize / 1000000}MB.
+        Choose a smaller file`,
+          {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          }
+        );
+        return;
+      }
+
+      const formData = new FormData();
+
+      // Update the formData object
+      formData.append("myFile", profileImage);
+
+      try {
+        await musicianService.uploadImage(formData);
+      } catch ({ response }) {
+        if (response && response.status === 400) {
+          this.setState({ errors: { first_name: response.data } });
+        } else {
+          this.setState({
+            errors: {
+              first_name: "failed to comunicate with server. Please try again",
+            },
+          });
+        }
+      }
+    }
+
     const arranged_districts = selected_districts.map((a) => {
       return { ...a };
     });
@@ -129,11 +186,7 @@ class UpdateCard extends Form {
 
     // const arranged_form = Object.assign({}, form);
 
-    if (profileImage) {
-      body.profileImage = profileImage;
-    }
-
-    delete body.email;
+    // delete body.email;
     // delete arranged_form.selected_districts;
     // delete arranged_form.selected_instruments;
 
@@ -147,6 +200,7 @@ class UpdateCard extends Form {
 
       try {
         await musicianService.updateMusician(body);
+
         await musicianService.updateItemsInTable(
           arranged_districts,
           "district"

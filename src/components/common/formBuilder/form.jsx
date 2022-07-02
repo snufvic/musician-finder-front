@@ -37,7 +37,7 @@ class Form extends Component {
     return error ? error.details[0].message : null;
   }
 
-  validateImage(name, value, size) {
+  validateImage(size) {
     const maxSize = config.imageMaxSize;
 
     if (size > maxSize) {
@@ -51,10 +51,10 @@ class Form extends Component {
       schema,
       state: { form },
     } = this;
-    // console.log(form);
     const { error } = Joi.object({ ...schema }).validate(form, {
       abortEarly: false,
     });
+    // console.log(error);
     if (!error) {
       return null;
     }
@@ -65,6 +65,22 @@ class Form extends Component {
     }
     return errors;
   }
+
+  // validateSubmit() {
+  //   console.log("this.state.errors", this.state.errors);
+  //   if (typeof this.state.errors === "undefined") {
+  //     return false;
+  //   } else {
+  //     const areTrue = Object.values(this.state.errors).every(
+  //       (value) => value === null
+  //     );
+  //     if (areTrue) {
+  //       return false;
+  //     } else {
+  //       return true;
+  //     }
+  //   }
+  // }
 
   handleChange = async ({ target: { value, name } }) => {
     const { form, errors } = this.state;
@@ -80,9 +96,9 @@ class Form extends Component {
     });
   };
 
-  handleImage = async ({ target: { files, value, name } }) => {
-    console.dir(files[0]);
-    const error = this.validateImage(name, value, files[0].size);
+  handleImage = async ({ target: { files, name } }) => {
+    // console.dir(files[0]);
+    const error = this.validateImage(files[0].size);
 
     const { form, errors } = this.state;
     await this.setState({

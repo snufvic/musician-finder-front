@@ -75,6 +75,13 @@ export async function createNewEnctyptedPassword(
   });
 }
 
+export async function uploadImage(formData) {
+  return await httpService.patch(
+    `${config.apiUrl}/musician_card/uploadfile`,
+    formData
+  );
+}
+
 const musicianService = {
   createMusician,
   login,
@@ -88,6 +95,7 @@ const musicianService = {
   updateItemsInTable,
   resetPassword,
   createNewEnctyptedPassword,
+  uploadImage,
 };
 
 export default musicianService;
