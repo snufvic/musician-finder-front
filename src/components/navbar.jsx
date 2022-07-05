@@ -29,11 +29,13 @@ function Navbar({ icon, user }) {
                 About
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/cards_list">
-                Search Musicians
-              </NavLink>
-            </li>
+            {user ? (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/cards_list">
+                  Search Musicians
+                </NavLink>
+              </li>
+            ) : null}
           </ul>
           <ul className="navbar-nav ms-auto mb-2 mb-sm-0">
             {user ? (

@@ -52,8 +52,16 @@ class App extends Component {
               }
             />
 
+            <Route
+              path="/cards_list"
+              element={
+                <ProtectedRoute>
+                  <CardsList />
+                </ProtectedRoute>
+              }
+            />
+
             <Route path="/logout" element={<LogOut />} />
-            <Route path="/cards_list" element={<CardsList />} />
             <Route path="/reset_password" element={<PasswordReset />} />
             <Route path="/confirm_code" element={<ConfirmCode />} />
           </Routes>

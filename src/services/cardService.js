@@ -21,9 +21,18 @@ export function getCards() {
 //   return httpService.delete(`${config.apiUrl}/cards/${id}`);
 // }
 
+export function getConnectedMusician() {
+  return httpService.get(`${config.apiUrl}/musician_card/me`);
+}
+
+export function getImage() {
+  return httpService.get(`${config.apiUrl}/musician_card`);
+}
+
 const cardService = {
   //   createCard,
   getCards,
+  getConnectedMusician,
   //   getCard,
   //   editCard,
   //   deleteCard,
