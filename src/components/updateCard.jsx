@@ -12,6 +12,7 @@ class UpdateCard extends Form {
       email: "",
       first_name: "",
       last_name: "",
+      age: "",
       phone: "",
       profileImage: {},
       selected_districts: [],
@@ -31,6 +32,7 @@ class UpdateCard extends Form {
       .max(10)
       .regex(/^0[2-9]\d{7,8}$/)
       .required(),
+    age: Joi.string().min(1).max(3).required(),
     profileImage: Joi.object()
       .keys({
         // name: Joi.string(),
@@ -54,6 +56,7 @@ class UpdateCard extends Form {
           first_name: musician.data.first_name,
           last_name: musician.data.last_name,
           phone: musician.data.phone,
+          age: musician.data.age,
           profileImage: "",
           selected_districts: musician.data.districts,
           selected_instruments: musician.data.instruments,
@@ -313,6 +316,12 @@ class UpdateCard extends Form {
           {this.renderInput({
             name: "phone",
             label: "Phone Number",
+            type: "number",
+            required: true,
+          })}
+          {this.renderInput({
+            name: "age",
+            label: "Age",
             type: "number",
             required: true,
           })}

@@ -5,6 +5,7 @@ function Home() {
   return (
     <>
       <PageHeader Header="Home" />
+      <hr />
       <div className="row">
         <div className="col-12">
           <p>
