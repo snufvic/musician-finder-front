@@ -46,8 +46,13 @@ export function getLikesAmount(cardId) {
 export function removeLikeTable(cardId) {
   return httpService.delete(`${config.apiUrl}/like/?cardId=${cardId}`);
 }
+
 export function addLikeTable(cardId) {
   return httpService.put(`${config.apiUrl}/like`, { cardId });
+}
+
+export function removeCardById(cardId) {
+  return httpService.patch(`${config.apiUrl}/musician_card/remove`, { cardId });
 }
 
 const cardService = {
@@ -59,6 +64,7 @@ const cardService = {
   // updateLikeTable,
   removeLikeTable,
   addLikeTable,
+  removeCardById,
   //   getCard,
   //   editCard,
   //   deleteCard,

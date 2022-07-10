@@ -68,8 +68,6 @@ class CardsList extends Component {
     }
   }
 
-  //****************************************** */
-
   checkLikeAndUpdate = async (likedByConnected, cardId) => {
     if (likedByConnected) {
       // need to do unlike
@@ -103,24 +101,33 @@ class CardsList extends Component {
       }
     }
 
-    console.log(
-      "this.state.connectedMusician.id",
-      this.state.connectedMusician.id
-    );
-    console.log("cardId", cardId);
-
     if (cardId === this.state.connectedMusician.id) {
       await this.getConnectedMusicianAndUpdateState();
       return;
     }
     await this.getRestMusiciansAndUpdateState();
-
-    // this.props.likedByConnected = !this.props.likedByConnected;
-    // timesLiked: this.state.timesLiked + 1,
-    // await this.getLikesAmountAndUpdateState(this.props.card.id);
   };
 
-  //****************************************** */
+  handleRemoveCard = async (cardId) => {
+    try {
+      await cardService.removeCardById(cardId);
+    } catch {
+      toast.error("Failed to remove card from server", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    if (cardId === this.state.connectedMusician.id) {
+      await this.getConnectedMusicianAndUpdateState();
+      return;
+    }
+    await this.getRestMusiciansAndUpdateState();
+  };
 
   render() {
     const { cards, connectedMusician } = this.state;
@@ -136,6 +143,7 @@ class CardsList extends Component {
               card={connectedMusician}
               fav={true}
               onCheckLikeAndUpdate={this.checkLikeAndUpdate}
+              onRemove={this.handleRemoveCard}
             />
           </div>
         ) : (
@@ -159,6 +167,7 @@ class CardsList extends Component {
                   card={card}
                   fav={true}
                   onCheckLikeAndUpdate={this.checkLikeAndUpdate}
+                  onRemove={this.handleRemoveCard}
                 />
               ))
             ) : (
@@ -178,6 +187,7 @@ class CardsList extends Component {
                   card={card}
                   fav={false}
                   onCheckLikeAndUpdate={this.checkLikeAndUpdate}
+                  onRemove={this.handleRemoveCard}
                 />
               ))
             ) : (

@@ -20,7 +20,12 @@ class Signin extends Form {
       .max(50)
       .email({ tlds: { allow: false } })
       .required(),
-    password: Joi.string().min(6).required(),
+    password: Joi.string()
+      .min(6)
+      // .regex(
+      //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4,})(?=.*[-_^#@$!%*&])[A-Za-z\d@$!%*?&]{8,}$/
+      // )
+      .required(),
   };
 
   async doSubmit() {

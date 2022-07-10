@@ -27,7 +27,8 @@ class Signup extends Form {
       .allow("")
       .min(9)
       .max(10)
-      .regex(/^0[2-9]\d{7,8}$/)
+      // .regex(/^0[2-9]\d{7,8}$/)
+      .regex(/^0(\d{1,2}).*(\d{7})$/)
       .optional(),
     password: Joi.string().min(6).required(),
     first_name: Joi.string().min(2).max(20).allow("").optional(),

@@ -31,6 +31,7 @@ class Card extends Component {
       },
       fav,
       onCheckLikeAndUpdate,
+      onRemove,
     } = this.props;
     return (fav && likedByConnected) ||
       (!fav && !likedByConnected) ||
@@ -137,14 +138,13 @@ class Card extends Component {
               {id === this.connectedMusician.id ||
               this.connectedMusician.access_level === 1 ? (
                 <div>
-                  <Link to="/card">
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-outline-dark mt-3 btn-danger mx-2"
-                    >
-                      <i className="bi bi-trash3"></i>
-                    </button>
-                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => onRemove(id)}
+                    className="btn btn-sm btn-outline-dark mt-3 btn-danger mx-2"
+                  >
+                    <i className="bi bi-trash3"></i>
+                  </button>
                 </div>
               ) : null}
             </div>
