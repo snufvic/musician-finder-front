@@ -11,12 +11,16 @@ class CardsList extends Component {
     cards: [],
   };
 
+  async componentDidMount() {
+    await this.getConnectedMusicianAndUpdateState();
+    await this.getRestMusiciansAndUpdateState();
+  }
+
   async getConnectedMusicianAndUpdateState() {
     try {
       const musician = await cardService.getConnectedMusician();
       this.setState({
         connectedMusician: {
-          ...this.state.form,
           email: musician.data.email,
           first_name: musician.data.first_name,
           last_name: musician.data.last_name,
@@ -27,6 +31,9 @@ class CardsList extends Component {
           selected_instruments: musician.data.instruments,
           is_card: musician.data.is_card,
           id: musician.data.id,
+          // allLikes: musician.data.allLikes,
+          likedByConnected: musician.data.likedByConnected,
+          timesLiked: musician.data.timesLiked,
         },
       });
     } catch {
@@ -61,10 +68,59 @@ class CardsList extends Component {
     }
   }
 
-  async componentDidMount() {
-    this.getConnectedMusicianAndUpdateState();
-    this.getRestMusiciansAndUpdateState();
-  }
+  //****************************************** */
+
+  checkLikeAndUpdate = async (likedByConnected, cardId) => {
+    if (likedByConnected) {
+      // need to do unlike
+      try {
+        await cardService.removeLikeTable(cardId);
+      } catch {
+        toast.error("Failed to update amount of Likes", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } else {
+      // need to do like
+      try {
+        await cardService.addLikeTable(cardId);
+      } catch {
+        toast.error("Failed to update amount of Likes", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    }
+
+    console.log(
+      "this.state.connectedMusician.id",
+      this.state.connectedMusician.id
+    );
+    console.log("cardId", cardId);
+
+    if (cardId === this.state.connectedMusician.id) {
+      await this.getConnectedMusicianAndUpdateState();
+      return;
+    }
+    await this.getRestMusiciansAndUpdateState();
+
+    // this.props.likedByConnected = !this.props.likedByConnected;
+    // timesLiked: this.state.timesLiked + 1,
+    // await this.getLikesAmountAndUpdateState(this.props.card.id);
+  };
+
+  //****************************************** */
 
   render() {
     const { cards, connectedMusician } = this.state;
@@ -76,7 +132,11 @@ class CardsList extends Component {
         {connectedMusician.is_card === 1 ? (
           <div className="row justify-content-center">
             <h4 className="text-center mt-2">Your Card</h4>
-            <Card card={connectedMusician} connectedId={connectedMusician.id} />
+            <Card
+              card={connectedMusician}
+              fav={true}
+              onCheckLikeAndUpdate={this.checkLikeAndUpdate}
+            />
           </div>
         ) : (
           <p className="text-center">
@@ -88,6 +148,25 @@ class CardsList extends Component {
         )}
         <br />
         <hr />
+        <h4 className="text-center mt-2">Favorite Musician Cards:</h4>
+
+        <div className="container">
+          <div className="row">
+            {cards.length ? (
+              cards.map((card) => (
+                <Card
+                  key={card.id}
+                  card={card}
+                  fav={true}
+                  onCheckLikeAndUpdate={this.checkLikeAndUpdate}
+                />
+              ))
+            ) : (
+              <p>No cards yet...</p>
+            )}
+          </div>
+        </div>
+        <hr />
         <h4 className="text-center mt-2">Other Musician Cards:</h4>
 
         <div className="container">
@@ -97,7 +176,8 @@ class CardsList extends Component {
                 <Card
                   key={card.id}
                   card={card}
-                  connectedId={connectedMusician.id}
+                  fav={false}
+                  onCheckLikeAndUpdate={this.checkLikeAndUpdate}
                 />
               ))
             ) : (

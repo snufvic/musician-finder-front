@@ -1,96 +1,17 @@
 import { Link } from "react-router-dom";
 import React, { Component } from "react";
 import config from "../config.json";
-import cardService from "../services/cardService";
-import { toast } from "react-toastify";
+// import cardService from "../services/cardService";
+// import { toast } from "react-toastify";
+import musicianService from "../services/musicianService";
 
 class Card extends Component {
   state = { btnValue: true };
 
-  async componentDidMount() {
-    await this.getLikesAmountAndUpdateState(this.props.card.id);
-  }
-
-  async getLikesAmountAndUpdateState(cardId) {
-    try {
-      const likeAmount = await cardService.getLikesAmount(cardId);
-
-      if (likeAmount.data.length) {
-        for (let i = 0; i < likeAmount.data.length; i++) {
-          if (likeAmount.data[i].m_id === this.props.connectedId) {
-            this.setState({
-              ...this.state,
-              likedByConnected: true,
-            });
-            break;
-          }
-        }
-        this.setState({
-          ...this.state,
-          timesLiked: likeAmount.data.length,
-        });
-        return;
-      }
-      this.setState({
-        ...this.state,
-        timesLiked: "",
-        likedByConnected: false,
-      });
-    } catch {
-      toast.error("Failed to retrieve Musician Cards Info from server", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }
-  }
+  connectedMusician = musicianService.getMusician();
 
   btnValueCollapse() {
     this.setState({ ...this.state, btnValue: !this.state.btnValue });
-  }
-
-  async checkLikeAndUpdate() {
-    if (this.state.likedByConnected) {
-      // need to do unlike
-      try {
-        await cardService.removeLikeTable(this.props.card.id);
-      } catch {
-        toast.error("Failed to update amount of Likes", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
-    } else {
-      // need to do like
-      try {
-        await cardService.addLikeTable(this.props.card.id);
-      } catch {
-        toast.error("Failed to update amount of Likes", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      }
-    }
-    this.setState({
-      ...this.state,
-      likedByConnected: !this.state.likedByConnected,
-      // timesLiked: this.state.timesLiked + 1,
-    });
-    await this.getLikesAmountAndUpdateState(this.props.card.id);
   }
 
   render() {
@@ -105,10 +26,15 @@ class Card extends Component {
         selected_districts,
         profileImage,
         selected_instruments,
+        likedByConnected,
+        timesLiked,
       },
-      connectedId,
+      fav,
+      onCheckLikeAndUpdate,
     } = this.props;
-    return (
+    return (fav && likedByConnected) ||
+      (!fav && !likedByConnected) ||
+      id === this.connectedMusician.id ? (
       <div className="col-6 col-md-3 col-lg-4 mt-3">
         <div className="card">
           <img
@@ -123,17 +49,17 @@ class Card extends Component {
               <b>Last Name:</b> {last_name}
             </p>
             <div className="d-flex border-top mb-2">
-              <label className="mt-3 mx-2">{this.state.timesLiked}</label>
+              <label className="mt-3 mx-2">{timesLiked}</label>
               <button
                 type="button"
                 className={
-                  this.state.likedByConnected
+                  likedByConnected
                     ? "btn btn-sm btn-outline-dark btn-info mt-3 mx-2"
                     : "btn btn-sm btn-outline-dark btn-light mt-3 mx-2"
                 }
-                onClick={() => this.checkLikeAndUpdate()}
+                onClick={() => onCheckLikeAndUpdate(likedByConnected, id)}
               >
-                {this.state.likedByConnected ? (
+                {likedByConnected ? (
                   <>
                     <i className="bi bi-bookmark-star-fill"></i>
                   </>
@@ -195,13 +121,7 @@ class Card extends Component {
               }
             </div>
             <div className="d-flex justify-content-end border-top mb-2">
-              {/* <button
-                type="button"
-                className="btn btn-sm btn-outline-dark mt-3 btn-info mx-2"
-              >
-                <i className="bi bi-star"></i>
-              </button> */}
-              {id === connectedId ? (
+              {id === this.connectedMusician.id ? (
                 <div>
                   <Link to="/card">
                     <button
@@ -212,6 +132,11 @@ class Card extends Component {
                       <i className="bi bi-pencil"></i>
                     </button>
                   </Link>
+                </div>
+              ) : null}
+              {id === this.connectedMusician.id ||
+              this.connectedMusician.access_level === 1 ? (
+                <div>
                   <Link to="/card">
                     <button
                       type="button"
@@ -226,7 +151,7 @@ class Card extends Component {
           </div>
         </div>
       </div>
-    );
+    ) : null;
   }
 }
 
