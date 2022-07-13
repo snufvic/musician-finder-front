@@ -18,6 +18,8 @@ import PasswordReset from "./components/passwordReset";
 import ConfirmCode from "./components/confirmCode";
 import ProtectedRoute from "./components/common/protectedRoute";
 import CardsList from "./components/cardsList";
+import AdminView from "./components/admin";
+import ProtectedAdmin from "./components/common/ProtectedAdmin";
 
 const icon = "bi bi-file-music";
 
@@ -58,6 +60,15 @@ class App extends Component {
                 <ProtectedRoute>
                   <CardsList />
                 </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/admin"
+              element={
+                <ProtectedAdmin>
+                  <AdminView />
+                </ProtectedAdmin>
               }
             />
 

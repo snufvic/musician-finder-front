@@ -36,13 +36,20 @@ function Navbar({ icon, user }) {
                 </NavLink>
               </li>
             ) : null}
+            {user && user.access_level === 1 ? (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/admin">
+                  Admin Tab
+                </NavLink>
+              </li>
+            ) : null}
           </ul>
           <ul className="navbar-nav ms-auto mb-2 mb-sm-0">
             {user ? (
               <>
                 <li className="nav-item">
                   <NavLink className="nav-link" to="card">
-                    Update Profile
+                    Create/Update Card
                   </NavLink>
                 </li>
                 <li className="nav-item">

@@ -14,6 +14,7 @@ class UpdateCard extends Form {
       last_name: "",
       age: "",
       phone: "",
+      is_card: "",
       profileImage: {},
       selected_districts: [],
       selected_instruments: [],
@@ -23,16 +24,19 @@ class UpdateCard extends Form {
   };
 
   schema = {
+    age: Joi.string().min(1).max(3).required(),
     email: Joi.string()
       .min(5)
       .max(50)
       .email({ tlds: { allow: false } }),
+    first_name: Joi.string().min(2).max(20).required(),
+    is_card: Joi.number().min(0).max(1).required(),
+    last_name: Joi.string().min(2).max(20).required(),
     phone: Joi.string()
       .min(9)
       .max(10)
       .regex(/^0[2-9]\d{7,8}$/)
       .required(),
-    age: Joi.string().min(1).max(3).required(),
     profileImage: Joi.object()
       .keys({
         // name: Joi.string(),
@@ -40,8 +44,6 @@ class UpdateCard extends Form {
       })
       .label("Image")
       .allow(""),
-    first_name: Joi.string().min(2).max(20).required(),
-    last_name: Joi.string().min(2).max(20).required(),
     selected_districts: Joi.array().required(),
     selected_instruments: Joi.array().required(),
   };
@@ -60,6 +62,7 @@ class UpdateCard extends Form {
           profileImage: "",
           selected_districts: musician.data.districts,
           selected_instruments: musician.data.instruments,
+          is_card: musician.data.is_card,
         },
       });
     } catch {
@@ -110,6 +113,7 @@ class UpdateCard extends Form {
         selected_instruments,
         profileImage,
         email,
+        is_card,
         ...body
       },
     } = this.state;
@@ -288,13 +292,21 @@ class UpdateCard extends Form {
   };
 
   render() {
-    const { email, selected_districts, selected_instruments } = this.state.form;
+    const { email, selected_districts, selected_instruments, is_card } =
+      this.state.form;
     return (
       <>
-        <PageHeader Header="Update Musician Card" />
+        <PageHeader
+          Header={is_card ? "Update Musician Card" : "Create Musician Card"}
+        />
         <div className="row text-center">
           <div className="col-12">
-            <p>Update a Musician card for account - {email}</p>
+            <p>
+              {is_card
+                ? "Update a Musician card for account "
+                : "Create a Musician card for account "}
+              - {email}
+            </p>
           </div>
         </div>
         <form
@@ -352,7 +364,9 @@ class UpdateCard extends Form {
             selected_instruments,
             "selected_instruments"
           )}
-          <div className="my-2">{this.renderButton("Update")}</div>
+          <div className="my-2">
+            {this.renderButton(is_card ? "Update" : "Create")}
+          </div>
         </form>
       </>
     );

@@ -66,22 +66,6 @@ class Form extends Component {
     return errors;
   }
 
-  // validateSubmit() {
-  //   console.log("this.state.errors", this.state.errors);
-  //   if (typeof this.state.errors === "undefined") {
-  //     return false;
-  //   } else {
-  //     const areTrue = Object.values(this.state.errors).every(
-  //       (value) => value === null
-  //     );
-  //     if (areTrue) {
-  //       return false;
-  //     } else {
-  //       return true;
-  //     }
-  //   }
-  // }
-
   handleChange = async ({ target: { value, name } }) => {
     const { form, errors } = this.state;
     await this.setState({

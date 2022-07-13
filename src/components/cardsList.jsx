@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import cardService from "../services/cardService";
 import { toast } from "react-toastify";
-import Card from "./card";
+import Card from "./common/card";
 import PageHeader from "./common/pageHeader";
 import { NavLink } from "react-router-dom";
 
@@ -111,6 +111,15 @@ class CardsList extends Component {
   handleRemoveCard = async (cardId) => {
     try {
       await cardService.removeCardById(cardId);
+      toast.success("Removed Musician Card successfully", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     } catch {
       toast.error("Failed to remove card from server", {
         position: "top-center",

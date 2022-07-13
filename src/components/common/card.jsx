@@ -1,9 +1,7 @@
 import { Link } from "react-router-dom";
 import React, { Component } from "react";
-import config from "../config.json";
-// import cardService from "../services/cardService";
-// import { toast } from "react-toastify";
-import musicianService from "../services/musicianService";
+import config from "../../config.json";
+import musicianService from "../../services/musicianService";
 
 class Card extends Component {
   state = { btnValue: true };
@@ -141,6 +139,7 @@ class Card extends Component {
                   <button
                     type="button"
                     onClick={() => onRemove(id)}
+                    title="Delete"
                     className="btn btn-sm btn-outline-dark mt-3 btn-danger mx-2"
                   >
                     <i className="bi bi-trash3"></i>
