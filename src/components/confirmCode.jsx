@@ -17,8 +17,18 @@ class ConfirmCode extends Form {
   };
 
   schema = {
-    verificationCode: Joi.string().min(8).required(),
-    password: Joi.string().min(8).required(),
+    verificationCode: Joi.string().length(8).required(),
+    password: Joi.string()
+      .min(8)
+      .max(255)
+      .regex(
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]{4,})(?=.*[-_^@$#!%*&])[A-Za-z0-9-_^@$#!%*&]{8,}/
+      )
+      .required()
+      .messages({
+        "string.pattern.base":
+          "Must have one lowercase letter, one capital letter, at least 4 digits, and at least one of the *_-&^%$#@! signs",
+      }),
   };
 
   componentDidMount() {
@@ -63,6 +73,16 @@ class ConfirmCode extends Form {
           draggable: true,
           progress: undefined,
         });
+      } else {
+        toast.error("Could not set the new password", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     }
   }
@@ -89,7 +109,6 @@ class ConfirmCode extends Form {
           {this.renderInput({
             name: "verificationCode",
             label: "Verification Code",
-            // type: "password",
             required: true,
           })}
           {this.renderInput({

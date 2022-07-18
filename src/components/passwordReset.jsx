@@ -53,6 +53,16 @@ class PasswordReset extends Form {
           draggable: true,
           progress: undefined,
         });
+      } else {
+        toast.error("Failed sending new password", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     }
   }

@@ -16,16 +16,28 @@ class AdminView extends Component {
       await this.addToState("district", districtPayload.data);
       const musiciansPayload = await adminService.getTable("musicians");
       await this.addToState("musicians", musiciansPayload.data);
-    } catch {
-      toast.error("Failed to retrieve table data from server", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+    } catch ({ response }) {
+      if (response && response.status === 400) {
+        toast.error(response.data, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error("Failed to retrieve table data from server", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     }
   }
 
@@ -64,16 +76,28 @@ class AdminView extends Component {
         draggable: true,
         progress: undefined,
       });
-    } catch {
-      toast.error("Failed to delete data from server", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+    } catch ({ response }) {
+      if (response && response.status === 400) {
+        toast.error(response.data, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error("Failed to delete data from server", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     }
   };
 
@@ -143,7 +167,6 @@ class AdminView extends Component {
           }),
         });
       }
-
       toast.success(`Updated access successfuly `, {
         position: "top-center",
         autoClose: 5000,
@@ -154,7 +177,7 @@ class AdminView extends Component {
         progress: undefined,
       });
     } catch {
-      toast.error("Failed to delete data from server", {
+      toast.error("Failed to update access", {
         position: "top-center",
         autoClose: 5000,
         hideProgressBar: false,

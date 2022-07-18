@@ -2,16 +2,14 @@ import PageHeader from "./common/pageHeader";
 import config from "../config.json";
 import { NavLink } from "react-router-dom";
 
-// import ReactDOM from 'react-dom'
-
-function Home() {
+function Home({ user }) {
   return (
     <>
       <PageHeader Header="Home" />
       <hr />
       <div className="container">
         <div className="row">
-          <p className="p-2 m-2 col-sm" style={{ "line-height": 30 }}>
+          <p className="p-2 m-2 col-sm">
             Welcome to the Musician Finder App. This website was built for you,
             the musicians who are seeking bandmates for their band but don't
             even know where to start. <br />
@@ -20,14 +18,30 @@ function Home() {
             where they want to play, their age and so on. <br />
             You can even rate musicians and add them to your favorites. <br />
             So, go on and{" "}
-            <span>
-              <NavLink to="/signup">register</NavLink>
-            </span>{" "}
+            {user ? (
+              "register"
+            ) : (
+              <span>
+                <NavLink to="/signup">register</NavLink>
+              </span>
+            )}{" "}
             (it is free) to{" "}
-            <span>
-              <NavLink to="/card">create a Musician Card</NavLink>
-            </span>
-            , search, and be searched by others!
+            {user ? (
+              <span>
+                <NavLink to="/card">create a Musician Card</NavLink>
+              </span>
+            ) : (
+              "create a Musician Card"
+            )}
+            ,{" "}
+            {user ? (
+              <span>
+                <NavLink to="/cards_list">search</NavLink>
+              </span>
+            ) : (
+              "search"
+            )}{" "}
+            , and be searched by others!
           </p>
           <img
             className="col-sm"

@@ -35,13 +35,10 @@ class UpdateCard extends Form {
     phone: Joi.string()
       .min(9)
       .max(10)
-      .regex(/^0[2-9]\d{7,8}$/)
+      .regex(/^0(\d{1,2}).*(\d{7})$/)
       .required(),
     profileImage: Joi.object()
-      .keys({
-        // name: Joi.string(),
-        // size: Joi.number().max(1000000).required(),
-      })
+      // .keys({})
       .label("Image")
       .allow(""),
     selected_districts: Joi.array().required(),
@@ -65,10 +62,24 @@ class UpdateCard extends Form {
           is_card: musician.data.is_card,
         },
       });
-    } catch {
-      this.setState({
-        errors: { first_name: "System Error. Failed to retrieve account info" },
-      });
+    } catch ({ response }) {
+      if (response && response.status === 400) {
+        toast.error(response.data, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        this.setState({
+          errors: {
+            first_name: "System Error. Failed to retrieve account info",
+          },
+        });
+      }
     }
   }
 
@@ -79,10 +90,22 @@ class UpdateCard extends Form {
       this.setState({
         districts: districts.data,
       });
-    } catch {
-      this.setState({
-        errors: { first_name: "System Error. Failed to connect to server" },
-      });
+    } catch ({ response }) {
+      if (response && response.status === 400) {
+        toast.error(response.data, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        this.setState({
+          errors: { first_name: "System Error. Failed to connect to server" },
+        });
+      }
     }
   }
 
@@ -93,10 +116,22 @@ class UpdateCard extends Form {
       this.setState({
         instruments: instruments.data,
       });
-    } catch {
-      this.setState({
-        errors: { first_name: "System Error. Failed to connect to server" },
-      });
+    } catch ({ response }) {
+      if (response && response.status === 400) {
+        toast.error(response.data, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        this.setState({
+          errors: { first_name: "System Error. Failed to connect to server" },
+        });
+      }
     }
   }
 
@@ -135,8 +170,6 @@ class UpdateCard extends Form {
     }
 
     if (profileImage) {
-      // console.log(profileImage.size);
-
       const maxSize = config.imageMaxSize;
 
       if (profileImage.size > maxSize) {
@@ -191,51 +224,40 @@ class UpdateCard extends Form {
       return { ...a };
     });
 
-    // const arranged_form = Object.assign({}, form);
-
-    // delete body.email;
-    // delete arranged_form.selected_districts;
-    // delete arranged_form.selected_instruments;
-
     try {
       const musician = await musicianService.getMusician();
       body.id = musician.id.toString();
-      // delete selected_districtsa.name;
 
       this.arrangeIdsToUpdateTable(body.id, arranged_districts);
       this.arrangeIdsToUpdateTable(body.id, arranged_instruments);
 
-      try {
-        await musicianService.updateMusician(body);
+      await musicianService.updateMusician(body);
 
-        await musicianService.updateItemsInTable(
-          arranged_districts,
-          "district"
-        );
-        await musicianService.updateItemsInTable(
-          arranged_instruments,
-          "instrument"
-        );
-
-        this.props.navigate("/cards_list");
-      } catch ({ response }) {
-        if (response && response.status === 400) {
-          this.setState({ errors: { first_name: response.data } });
-        } else {
-          this.setState({
-            errors: {
-              first_name: "failed to comunicate with server. Please try again",
-            },
-          });
-        }
-      }
-    } catch {
-      this.setState({
-        errors: {
-          first_name:
-            "Error reading account login - Please sign in and try again",
-        },
+      await musicianService.updateItemsInTable(arranged_districts, "district");
+      await musicianService.updateItemsInTable(
+        arranged_instruments,
+        "instrument"
+      );
+      toast.success("Successfully created Musician Card", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
+      this.props.navigate("/cards_list");
+    } catch ({ response }) {
+      if (response && response.status === 400) {
+        this.setState({ errors: { first_name: response.data } });
+      } else {
+        this.setState({
+          errors: {
+            first_name: "failed to comunicate with server. Please try again",
+          },
+        });
+      }
     }
   }
 

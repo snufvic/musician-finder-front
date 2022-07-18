@@ -27,10 +27,20 @@ class Signup extends Form {
       .allow("")
       .min(9)
       .max(10)
-      // .regex(/^0[2-9]\d{7,8}$/)
       .regex(/^0(\d{1,2}).*(\d{7})$/)
       .optional(),
-    password: Joi.string().min(6).required(),
+    password: Joi.string()
+      .min(8)
+      .max(255)
+      .regex(
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]{4,})(?=.*[-_^@$#!%*&])[A-Za-z0-9-_^@$#!%*&]{8,}/
+      )
+      .required()
+      .messages({
+        "string.pattern.base":
+          "Must have one lowercase letter, one capital letter, at least 4 digits, and at least one of the -_^#@$!%*& signs",
+      }),
+
     first_name: Joi.string().min(2).max(20).allow("").optional(),
     last_name: Joi.string().min(2).max(20).allow("").optional(),
   };

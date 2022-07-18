@@ -21,11 +21,16 @@ class Signin extends Form {
       .email({ tlds: { allow: false } })
       .required(),
     password: Joi.string()
-      .min(6)
-      // .regex(
-      //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d{4,})(?=.*[-_^#@$!%*&])[A-Za-z\d@$!%*?&]{8,}$/
-      // )
-      .required(),
+      .min(8)
+      .max(255)
+      .regex(
+        /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]{4,})(?=.*[-_^@$#!%*&])[A-Za-z0-9-_^@$#!%*&]{8,}/
+      )
+      .required()
+      .messages({
+        "string.pattern.base":
+          "Must have one lowercase letter, one capital letter, at least 4 digits, and at least one of the -_^#@$!%*& signs",
+      }),
   };
 
   async doSubmit() {
@@ -79,8 +84,6 @@ class Signin extends Form {
           })}
 
           <div className="my-2">{this.renderButton("Sign In")}</div>
-
-          {/* <NavLink className="nav-link" to="/"></NavLink> */}
         </form>
 
         <div className="row text-center">

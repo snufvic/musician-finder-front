@@ -54,7 +54,6 @@ class Form extends Component {
     const { error } = Joi.object({ ...schema }).validate(form, {
       abortEarly: false,
     });
-    // console.log(error);
     if (!error) {
       return null;
     }

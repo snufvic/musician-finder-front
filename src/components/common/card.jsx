@@ -27,13 +27,10 @@ class Card extends Component {
         likedByConnected,
         timesLiked,
       },
-      fav,
       onCheckLikeAndUpdate,
       onRemove,
     } = this.props;
-    return (fav && likedByConnected) ||
-      (!fav && !likedByConnected) ||
-      id === this.connectedMusician.id ? (
+    return (
       <div className="col-6 col-md-3 col-lg-4 mt-3">
         <div className="card">
           <img
@@ -150,7 +147,7 @@ class Card extends Component {
           </div>
         </div>
       </div>
-    ) : null;
+    );
   }
 }
 

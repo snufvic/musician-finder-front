@@ -4,11 +4,13 @@ import { toast } from "react-toastify";
 import Card from "./common/card";
 import PageHeader from "./common/pageHeader";
 import { NavLink } from "react-router-dom";
+import Searchbar from "./common/searchbar";
 
 class CardsList extends Component {
   state = {
     connectedMusician: "",
     cards: [],
+    searchField: "",
   };
 
   async componentDidMount() {
@@ -31,40 +33,62 @@ class CardsList extends Component {
           selected_instruments: musician.data.instruments,
           is_card: musician.data.is_card,
           id: musician.data.id,
-          // allLikes: musician.data.allLikes,
           likedByConnected: musician.data.likedByConnected,
           timesLiked: musician.data.timesLiked,
         },
       });
-    } catch {
-      toast.error("Failed to retrieve Musician Card from server", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+    } catch ({ response }) {
+      if (response && response.status === 400) {
+        toast.error(response.data, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error("Failed to retrieve Musician Card from server", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     }
   }
-
   async getRestMusiciansAndUpdateState() {
     try {
       const { data } = await cardService.getRestOfCards();
       if (data.length) {
         this.setState({ ...this.state, cards: data });
       }
-    } catch {
-      toast.error("Failed to retrieve Musician Cards from server", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+    } catch ({ response }) {
+      if (response && response.status === 400) {
+        toast.error(response.data, {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        toast.error("Failed to retrieve Musician Cards from server", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     }
   }
 
@@ -138,8 +162,59 @@ class CardsList extends Component {
     await this.getRestMusiciansAndUpdateState();
   };
 
+  search(cards, is_liked) {
+    const { searchField } = this.state;
+    const filteredPersons = cards.filter((card) => {
+      if (
+        card.selected_districts.length &&
+        card.likedByConnected === is_liked
+      ) {
+        for (let i = 0; i < card.selected_districts.length; i++) {
+          if (
+            card.selected_districts[i].name
+              .toLowerCase()
+              .includes(searchField.toLowerCase())
+          )
+            return true;
+        }
+      }
+      if (
+        card.selected_instruments.length &&
+        card.likedByConnected === is_liked
+      ) {
+        for (let i = 0; i < card.selected_instruments.length; i++) {
+          if (
+            card.selected_instruments[i].name
+              .toLowerCase()
+              .includes(searchField.toLowerCase())
+          )
+            return true;
+        }
+      }
+
+      return (
+        (card.first_name.toLowerCase().includes(searchField.toLowerCase()) ||
+          card.last_name.toLowerCase().includes(searchField.toLowerCase())) &&
+        card.likedByConnected === is_liked
+      );
+    });
+    return filteredPersons;
+  }
+
+  handleChange = (e) => {
+    this.setState({
+      searchField: e.target.value,
+    });
+  };
+
   render() {
     const { cards, connectedMusician } = this.state;
+    let filteredCardsLiked = null;
+    let filteredCardsNotLiked = null;
+    if (cards) {
+      filteredCardsLiked = this.search(cards, true);
+      filteredCardsNotLiked = this.search(cards, false);
+    }
 
     return (
       <>
@@ -165,22 +240,29 @@ class CardsList extends Component {
         )}
         <br />
         <hr />
-        <h4 className="text-center mt-2">Favorite Musician Cards:</h4>
+
+        <Searchbar
+          title="Search Cards"
+          handleChange={this.handleChange}
+          placeholder="type to search by first or last name, instruments or districts"
+        />
+        <hr />
+
+        <h4 className="text-center mt-2">Your Favorite Musician Cards:</h4>
 
         <div className="container">
           <div className="row">
-            {cards.length ? (
-              cards.map((card) => (
+            {filteredCardsLiked.length ? (
+              filteredCardsLiked.map((card) => (
                 <Card
                   key={card.id}
                   card={card}
-                  fav={true}
                   onCheckLikeAndUpdate={this.checkLikeAndUpdate}
                   onRemove={this.handleRemoveCard}
                 />
               ))
             ) : (
-              <p>No cards yet...</p>
+              <p>No cards found</p>
             )}
           </div>
         </div>
@@ -189,18 +271,17 @@ class CardsList extends Component {
 
         <div className="container">
           <div className="row">
-            {cards.length ? (
-              cards.map((card) => (
+            {filteredCardsNotLiked.length ? (
+              filteredCardsNotLiked.map((card) => (
                 <Card
                   key={card.id}
                   card={card}
-                  fav={false}
                   onCheckLikeAndUpdate={this.checkLikeAndUpdate}
                   onRemove={this.handleRemoveCard}
                 />
               ))
             ) : (
-              <p>No cards yet...</p>
+              <p>No cards found</p>
             )}
           </div>
         </div>

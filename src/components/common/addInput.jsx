@@ -36,27 +36,30 @@ class AddInput extends Component {
     return (
       <>
         <hr />
-
-        <div className="input-group mb-3">
-          {preMessage ? (
-            <span className="input-group-text" id="basic-addon3">
-              {preMessage}
-            </span>
-          ) : null}
-          <input
-            type="text"
-            className={["form-control", error ? "is-invalid" : null].join(" ")}
-            onInput={this.handleFormInputChange}
-            value={formInput}
-          />
-          <button
-            onClick={this.handleSubmit}
-            className="btn btn-outline-success"
-            type="button"
-          >
-            {submitButtonText ? submitButtonText : "submit"}
-          </button>
-          <div className="invalid-feedback">{error}</div>
+        <div className="col-7">
+          <div className="input-group mb-3">
+            {preMessage ? (
+              <span className="input-group-text" id="basic-addon3">
+                {preMessage}
+              </span>
+            ) : null}
+            <input
+              type="text"
+              className={["form-control", error ? "is-invalid" : null].join(
+                " "
+              )}
+              onInput={this.handleFormInputChange}
+              value={formInput}
+            />
+            <button
+              onClick={this.handleSubmit}
+              className="btn btn-outline-success"
+              type="button"
+            >
+              {submitButtonText ? submitButtonText : "submit"}
+            </button>
+            <div className="invalid-feedback">{error}</div>
+          </div>
         </div>
       </>
     );
