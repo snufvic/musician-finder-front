@@ -1,3 +1,8 @@
+MAKE SURE YOUR SERVER RUNS ON LOCALHOST PORT 3030. IF NOT, CHANGE IN THE src->config.json FILE UNDER "apiUrl"
+
+MAXIMUM IMAGE SIZE FOR UPLOADING TO SERVER IS SET TO 1MB. IF NEEDED CHANGE IN THE src->config.json FILE UNDER "imageMaxSize" (ALSO CHANGE IN THE SERVER SIDE APP IN CONFIG FOLDER)
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
