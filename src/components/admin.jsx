@@ -61,24 +61,18 @@ class AdminView extends Component {
   }
 
   handleDelete = async (tableName, rowId) => {
-    try {
-      await adminService.deleteById(tableName, rowId);
+    if (
+      window.confirm(
+        `Are you sure you want to delete row with id -> ${rowId} from table "${tableName}"?`
+      )
+    ) {
+      try {
+        await adminService.deleteById(tableName, rowId);
 
-      this.setState({
-        [tableName]: this.state[tableName].filter((row) => row.id !== rowId),
-      });
-      toast.success(`Deleted row successfully from ${tableName} table `, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    } catch ({ response }) {
-      if (response && response.status === 400) {
-        toast.error(response.data, {
+        this.setState({
+          [tableName]: this.state[tableName].filter((row) => row.id !== rowId),
+        });
+        toast.success(`Deleted row successfully from ${tableName} table `, {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -87,16 +81,28 @@ class AdminView extends Component {
           draggable: true,
           progress: undefined,
         });
-      } else {
-        toast.error("Failed to delete data from server", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
+      } catch ({ response }) {
+        if (response && response.status === 400) {
+          toast.error(response.data, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        } else {
+          toast.error("Failed to delete data from server", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+        }
       }
     }
   };
