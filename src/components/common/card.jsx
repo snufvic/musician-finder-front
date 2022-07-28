@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import React, { Component } from "react";
 import config from "../../config.json";
 import musicianService from "../../services/musicianService";
+import { motion } from "framer-motion";
 
 class Card extends Component {
   state = { btnValue: true };
@@ -31,7 +32,13 @@ class Card extends Component {
       onRemove,
     } = this.props;
     return (
-      <div className="col-6 col-md-3 col-lg-4 mt-3">
+      <motion.div
+        className="col-6 col-md-3 col-lg-4 mt-3"
+        key={id}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
         <div className="card">
           <img
             src={config.apiUrl + "/" + profileImage}
@@ -146,7 +153,7 @@ class Card extends Component {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 }

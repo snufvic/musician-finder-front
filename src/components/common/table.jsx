@@ -48,7 +48,7 @@ class Table extends Component {
                       <td key={key}>
                         {rowData[key]}
                         {key === "access_level" &&
-                        rowData.id != this.connectedMusician.id ? (
+                        rowData.id !== this.connectedMusician.id ? (
                           <button
                             type="button"
                             onClick={() =>

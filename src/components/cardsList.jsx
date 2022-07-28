@@ -5,6 +5,7 @@ import Card from "./common/card";
 import PageHeader from "./common/pageHeader";
 import { NavLink } from "react-router-dom";
 import Searchbar from "./common/searchbar";
+import { AnimatePresence } from "framer-motion";
 
 class CardsList extends Component {
   state = {
@@ -252,18 +253,20 @@ class CardsList extends Component {
 
         <div className="container">
           <div className="row">
-            {filteredCardsLiked.length ? (
-              filteredCardsLiked.map((card) => (
-                <Card
-                  key={card.id}
-                  card={card}
-                  onCheckLikeAndUpdate={this.checkLikeAndUpdate}
-                  onRemove={this.handleRemoveCard}
-                />
-              ))
-            ) : (
-              <p>No cards found</p>
-            )}
+            <AnimatePresence>
+              {filteredCardsLiked.length ? (
+                filteredCardsLiked.map((card) => (
+                  <Card
+                    key={card.id}
+                    card={card}
+                    onCheckLikeAndUpdate={this.checkLikeAndUpdate}
+                    onRemove={this.handleRemoveCard}
+                  />
+                ))
+              ) : (
+                <p>No cards found</p>
+              )}
+            </AnimatePresence>
           </div>
         </div>
         <hr />
@@ -271,18 +274,20 @@ class CardsList extends Component {
 
         <div className="container">
           <div className="row">
-            {filteredCardsNotLiked.length ? (
-              filteredCardsNotLiked.map((card) => (
-                <Card
-                  key={card.id}
-                  card={card}
-                  onCheckLikeAndUpdate={this.checkLikeAndUpdate}
-                  onRemove={this.handleRemoveCard}
-                />
-              ))
-            ) : (
-              <p>No cards found</p>
-            )}
+            <AnimatePresence>
+              {filteredCardsNotLiked.length ? (
+                filteredCardsNotLiked.map((card) => (
+                  <Card
+                    key={card.id}
+                    card={card}
+                    onCheckLikeAndUpdate={this.checkLikeAndUpdate}
+                    onRemove={this.handleRemoveCard}
+                  />
+                ))
+              ) : (
+                <p>No cards found</p>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </>
